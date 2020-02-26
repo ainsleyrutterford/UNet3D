@@ -48,8 +48,10 @@ class UNet3D(nn.Module):
 
         down4 = self.down_block4(t)
         t = self.maxpool(down4)
+        t = F.dropout(t)
 
         t = self.bottle(t)
+        t = F.dropout(t)
 
         t = self.up1(t)
         t = torch.cat([t, self.crop(t, down4)], 1)

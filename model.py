@@ -1,3 +1,4 @@
+import math
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
@@ -5,15 +6,15 @@ import torch.nn.functional as F
 class Block(nn.Module):
     def __init__(self, in_channels, out_channels):
         super().__init__()
-        self.conv1 = nn.Conv2d(in_channels, out_channels, 3)
-        self.conv2 = nn.Conv2d(out_channels, out_channels, 3)
+        self.conv1 = nn.Conv2d(in_channels, out_channels, 3, padding=1)
+        self.conv2 = nn.Conv2d(out_channels, out_channels, 3, padding=1)
     
     def forward(self, t):
         t = F.relu(self.conv1(t))
         t = F.relu(self.conv2(t))
         return t
 
-class UNet3D(nn.Module):
+class UNet2D(nn.Module):
     def __init__(self):
         super().__init__()
         self.down_block1 = Block(1, 64)
@@ -74,6 +75,8 @@ class UNet3D(nn.Module):
     
     @staticmethod
     def crop(t, d):
-        pad_x = (t.shape[3] - d.shape[3]) // 2
-        pad_y = (t.shape[2] - d.shape[2]) // 2
-        return F.pad(d, (pad_x, pad_x, pad_y, pad_y))
+        pad_x1 = int(math.floor((t.shape[3] - d.shape[3]) / 2))
+        pad_x2 = int(math.ceil((t.shape[3] - d.shape[3]) / 2))
+        pad_y1 = int(math.floor((t.shape[2] - d.shape[2]) / 2))
+        pad_y2 = int(math.ceil((t.shape[2] - d.shape[2]) / 2))
+        return F.pad(d, (pad_x1, pad_x2, pad_y1, pad_y2))

@@ -26,8 +26,7 @@ for epoch in range(5):
     total_loss = 0
     total_correct = 0
     for batch in tqdm(train_loader):
-        samples = batch['sample']
-        labels = batch['label']
+        samples, labels = batch
         predictions = unet(samples)
         labels = torch.squeeze(labels, 1).long()
         loss = F.cross_entropy(predictions, labels)

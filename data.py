@@ -29,4 +29,4 @@ class CoralDataset2D(Dataset):
             sample = self.transform(sample)
             label = self.transform(label)
 
-        return {'sample': sample, 'label': label}
+        return sample, label

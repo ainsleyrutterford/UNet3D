@@ -7,6 +7,11 @@ import torchvision.transforms as transforms
 from torch.utils.data import DataLoader
 from tqdm import tqdm
 
+if torch.cuda.is_available():
+    device = torch.device("cuda")
+else:
+    device = torch.device("cpu")
+
 unet = model.UNet2D()
 
 optimizer = optim.Adam(unet.parameters(), lr=0.0001)
@@ -25,10 +30,11 @@ def num_correct(predictions, labels):
 for epoch in range(5):
     total_loss = 0
     total_correct = 0
-    for batch in tqdm(train_loader):
-        samples, labels = batch
-        predictions = unet(samples)
+    for samples, labels in tqdm(train_loader):
+        samples = samples.to(device)
+        labels = labels.to(device)
         labels = torch.squeeze(labels, 1).long()
+        predictions = unet(samples)
         loss = F.cross_entropy(predictions, labels)
 
         loss.backward()

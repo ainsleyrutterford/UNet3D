@@ -22,6 +22,8 @@ class CoralDataset2D(Dataset):
         f = sorted(glob.glob(f"{self.label_dir}/*.png"))[idx]
         name = os.path.abspath(f)
         label = io.imread(name)
+        threshold = label < 0.5
+        label[threshold] = 0
 
         if self.transform:
             sample = self.transform(sample)

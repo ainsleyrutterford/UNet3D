@@ -4,6 +4,7 @@ import torch
 import torch.optim as optim
 import torch.nn.functional as F
 import torchvision.transforms as transforms
+from multiprocessing import cpu_count
 from torch.utils.data import DataLoader
 from tqdm import tqdm
 
@@ -22,7 +23,7 @@ train_set = data.CoralDataset2D(sample_dir="data/train/image",
                                 label_dir="data/train/label",
                                 transform=transforms.Compose([transforms.ToTensor()]))
 
-train_loader = DataLoader(train_set, batch_size=batch_size, shuffle=True)
+train_loader = DataLoader(train_set, batch_size=batch_size, shuffle=True, num_workers=cpu_count())
 
 def num_correct(predictions, labels):
     return predictions.argmax(1).eq(labels).sum().item()

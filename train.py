@@ -43,3 +43,5 @@ for epoch in range(5):
         total_loss += loss.item() * batch_size
 
     print(f'epoch: {epoch} loss: {total_loss}')
+
+torch.save(unet.state_dict(), 'save.pt')

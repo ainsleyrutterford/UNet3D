@@ -6,7 +6,6 @@ import torch.nn.functional as F
 import torchvision.transforms as transforms
 from multiprocessing import cpu_count
 from torch.utils.data import DataLoader
-from tqdm import tqdm
 
 if torch.cuda.is_available():
     device = torch.device("cuda")
@@ -30,7 +29,7 @@ train_loader = DataLoader(train_set,
 
 for epoch in range(5):
     total_loss = 0
-    for samples, labels in tqdm(train_loader):
+    for samples, labels in train_loader:
         samples = samples.to(device)
         labels = labels.to(device)
         labels = torch.squeeze(labels, 1).long()

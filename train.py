@@ -13,7 +13,7 @@ if torch.cuda.is_available():
 else:
     device = torch.device("cpu")
 
-unet = model.UNet2D()
+unet = model.UNet2D().to(device)
 
 optimizer = optim.Adam(unet.parameters(), lr=0.0001)
 
@@ -23,14 +23,13 @@ train_set = data.CoralDataset2D(sample_dir="data/train/image",
                                 label_dir="data/train/label",
                                 transform=transforms.Compose([transforms.ToTensor()]))
 
-train_loader = DataLoader(train_set, batch_size=batch_size, shuffle=True, num_workers=cpu_count())
-
-def num_correct(predictions, labels):
-    return predictions.argmax(1).eq(labels).sum().item()
+train_loader = DataLoader(train_set, 
+                          batch_size=batch_size, 
+                          shuffle=True, 
+                          num_workers=cpu_count())
 
 for epoch in range(5):
     total_loss = 0
-    total_correct = 0
     for samples, labels in tqdm(train_loader):
         samples = samples.to(device)
         labels = labels.to(device)
@@ -43,6 +42,5 @@ for epoch in range(5):
         optimizer.zero_grad()
 
         total_loss += loss.item() * batch_size
-        total_correct += num_correct(predictions, labels)
 
-    print(f'epoch: {epoch} total correct: {total_correct}, loss: {total_loss}')
+    print(f'epoch: {epoch} loss: {total_loss}')

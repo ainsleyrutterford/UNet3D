@@ -18,9 +18,15 @@ optimizer = optim.Adam(unet.parameters(), lr=0.0001)
 
 batch_size = 2
 
+transform = transforms.Compose([transforms.ColorJitter(brightness=0.1, contrast=0.1),
+                                transforms.RandomHorizontalFlip(),
+                                transforms.RandomVerticalFlip(),
+                                transforms.RandomRotation((-1,1)),
+                                transforms.ToTensor()])
+
 train_set = data.CoralDataset2D(sample_dir="data/train/image", 
                                 label_dir="data/train/label",
-                                transform=transforms.Compose([transforms.ToTensor()]))
+                                transform=transform)
 
 train_loader = DataLoader(train_set, 
                           batch_size=batch_size, 
